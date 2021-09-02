@@ -1,15 +1,20 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lucky_parking/domain/usecases/login_usecase.dart';
 import 'package:lucky_parking/login/bloc/login_state.dart';
 import 'package:lucky_parking/res/string_res.dart';
 
 const _MIN_LENGTH_PASSWORD = 4;
 
 class LoginCubit extends Cubit<LoginState> {
-
   String _currentPassword = "";
   String _currentLogin = "";
 
-  LoginCubit() : super(LoginEmptyState());
+  final LoginUserCase _loginUseCase;
+
+  LoginCubit({required LoginUserCase loginUseCase})
+      : this._loginUseCase = loginUseCase,
+        super(LoginEmptyState()) {
+  }
 
   onChangePassword(String newPassword) {
     _currentPassword = newPassword;
@@ -19,9 +24,17 @@ class LoginCubit extends Cubit<LoginState> {
     _currentLogin = newLogin;
   }
 
-  login() {
+  login() async {
     if (_checkData()) {
       print("$_currentLogin: $_currentPassword");
+      emit(LoginInProgressState());
+      final loginResult = await _loginUseCase(LoginParams(login: _currentLogin, password: _currentPassword));
+      if (loginResult.isSuccess) {
+        emit(LoginEmptyState());
+        print("success");
+      } else {
+        print("error");
+      }
     }
   }
 
@@ -34,7 +47,7 @@ class LoginCubit extends Cubit<LoginState> {
 
     if (_currentPassword.isEmpty) {
       passwordCheckMessage = StringResources.LOGIN_PAGE_PASSWORD_ERROR_EMPTY;
-    } else  if (_currentPassword.length < _MIN_LENGTH_PASSWORD) {
+    } else if (_currentPassword.length < _MIN_LENGTH_PASSWORD) {
       passwordCheckMessage = StringResources.LOGIN_PAGE_PASSWORD_ERROR_SHORT;
     }
 

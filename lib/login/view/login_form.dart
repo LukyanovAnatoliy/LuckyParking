@@ -1,8 +1,11 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lucky_parking/login/bloc/login_bloc.dart';
 import 'package:lucky_parking/login/bloc/login_state.dart';
 import 'package:lucky_parking/res/string_res.dart';
+
+const _BUTTON_HEIGHT = 40.0;
 
 class LoginForm extends StatelessWidget {
   @override
@@ -16,7 +19,6 @@ class LoginForm extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-
             TextField(
               decoration: InputDecoration(
                 labelText: StringResources.LOGIN_PAGE_LOGIN_LABEL,
@@ -25,9 +27,7 @@ class LoginForm extends StatelessWidget {
               ),
               onChanged: loginBloc.onChangeLogin,
             ),
-
             Padding(padding: EdgeInsets.all(8)),
-
             TextField(
               obscureText: true,
               decoration: InputDecoration(
@@ -37,20 +37,41 @@ class LoginForm extends StatelessWidget {
               ),
               onChanged: loginBloc.onChangePassword,
             ),
-
             Padding(padding: EdgeInsets.all(8)),
-
             Container(
               width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () => loginBloc.login(),
-                child: const Text(StringResources.LOGIN_PAGE_BUTTON_LABEL),
-              ),
+              child: state is LoginInProgressState ? _getWaitButton() : _getLoginButton(() => loginBloc.login()),
             ),
-
           ],
         ),
       );
     });
+  }
+
+  Widget _getWaitButton() {
+    return SizedBox(
+      height: _BUTTON_HEIGHT,
+      child: ElevatedButton(
+        onPressed: () {},
+        child: SizedBox(
+          height: 25,
+          width: 25,
+          child: CircularProgressIndicator(
+            color: Colors.white,
+            strokeWidth: 3,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _getLoginButton(void Function() loginAction) {
+    return SizedBox(
+      height: _BUTTON_HEIGHT,
+      child: ElevatedButton(
+        onPressed: loginAction,
+        child: Text(StringResources.LOGIN_PAGE_BUTTON_LABEL),
+      ),
+    );
   }
 }
