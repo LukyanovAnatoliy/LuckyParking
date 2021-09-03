@@ -1,6 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lucky_parking/domain/usecases/login_usecase.dart';
 import 'package:lucky_parking/login/bloc/login_state.dart';
+import 'package:lucky_parking/navigation/navigator.dart';
+import 'package:lucky_parking/navigation/screens/app_screen.dart';
 import 'package:lucky_parking/res/string_res.dart';
 
 const _MIN_LENGTH_PASSWORD = 4;
@@ -10,11 +12,12 @@ class LoginCubit extends Cubit<LoginState> {
   String _currentLogin = "";
 
   final LoginUserCase _loginUseCase;
+  final Navigator _navigator;
 
-  LoginCubit({required LoginUserCase loginUseCase})
+  LoginCubit({required LoginUserCase loginUseCase, required Navigator navigator})
       : this._loginUseCase = loginUseCase,
-        super(LoginEmptyState()) {
-  }
+        this._navigator = navigator,
+        super(LoginEmptyState());
 
   onChangePassword(String newPassword) {
     _currentPassword = newPassword;
@@ -31,7 +34,7 @@ class LoginCubit extends Cubit<LoginState> {
       final loginResult = await _loginUseCase(LoginParams(login: _currentLogin, password: _currentPassword));
       if (loginResult.isSuccess) {
         emit(LoginEmptyState());
-        print("success");
+        _navigator.navigateToNewMainScreen(AppScreen.HOME);
       } else {
         print("error");
       }

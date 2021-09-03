@@ -5,11 +5,16 @@ import 'package:lucky_parking/data/repositories/login_repository_impl.dart';
 import 'package:lucky_parking/domain/repositories/login_repository.dart';
 import 'package:lucky_parking/domain/usecases/login_usecase.dart';
 import 'package:lucky_parking/login/bloc/login_bloc.dart';
+import 'package:lucky_parking/navigation/app_navigator.dart';
+import 'package:lucky_parking/navigation/navigator.dart';
 
 GetIt sl = GetIt.instance;
 
 init() {
-  sl.registerFactory<LoginCubit>(() => LoginCubit(loginUseCase: sl<LoginUserCase>()));
+  sl.registerLazySingleton<AppNavigator>(() => AppNavigator());
+  sl.registerLazySingleton<Navigator>(() => sl.get<AppNavigator>());
+
+  sl.registerFactory<LoginCubit>(() => LoginCubit(loginUseCase: sl<LoginUserCase>(), navigator: sl()));
 
   sl.registerFactory<LoginUserCase>(() => LoginUserCase(loginRepository: sl<LoginRepository>()));
 

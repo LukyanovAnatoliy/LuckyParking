@@ -1,0 +1,4 @@
+enum AppScreen {
+  HOME,
+  LOGIN
+}
