@@ -36,7 +36,7 @@ class LoginCubit extends Cubit<LoginState> {
         emit(LoginEmptyState());
         _navigator.navigateToNewMainScreen(AppScreen.HOME);
       } else {
-        print("error");
+        emit(LoginServerException(errorMessage: loginResult.errorMessage ?? ""));
       }
     }
   }

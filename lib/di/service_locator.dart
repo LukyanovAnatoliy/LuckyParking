@@ -22,6 +22,9 @@ init() {
 
   sl.registerLazySingleton<Api>(() {
     final dio = Dio(); // Provide a dio instance
+    dio.options.connectTimeout = 3000;
+    dio.options.sendTimeout = 3000;
+    dio.options.receiveTimeout = 3000;
     dio.interceptors.add(LogInterceptor());
     return Api(dio);
   });

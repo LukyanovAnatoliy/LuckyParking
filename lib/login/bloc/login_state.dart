@@ -21,5 +21,5 @@ class LoginInvalidDataState extends LoginState {
 class LoginServerException extends LoginState {
   final String errorMessage;
 
-  LoginServerException({this.errorMessage = ""}) : super();
+  LoginServerException({required this.errorMessage}) : super();
 }

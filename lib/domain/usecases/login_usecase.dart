@@ -11,9 +11,15 @@ class LoginUserCase implements UseCase<LoginResult, LoginParams> {
 
   @override
   Future<LoginResult> call(LoginParams params) async {
-    final loginResult = await _loginRepository.login(params.login, params.password);
-    print(loginResult.toJson());
-    return Future.value(LoginResult());
+
+    try {
+      final loginResult = await _loginRepository.login(params.login, params.password);
+      print(loginResult.toJson());
+      return Future.value(LoginResult());
+    } catch(e) {
+      print("exception");
+      return Future.value(LoginResult(isSuccess: false, errorMessage: e.toString()));
+    }
   }
 
 }
